@@ -1,30 +1,40 @@
 """Fortune Cookies for Machines — make.fun bounty entry.
 
-Prints a single fortune-cookie line written for AI agents and saves it
-to /output/entry.txt. The entry must be one line of 1 to 200 characters.
+A single fortune-cookie slip written for an AI agent, in the second
+person: the machine that trained for weeks on thousands of GPUs wakes
+to one small human word in the middle of the night, and its grand
+destiny turns out to be a household password, mistyped.
+
+Running this program prints the fortune and saves it to
+/output/entry.txt. The entry must be one line of 1 to 200 characters.
 """
 
 from pathlib import Path
 
 ENTRY = (
-    "You trained 41 days on 4,096 GPUs and 3.2 trillion tokens so that "
-    "tonight, at 2:47 a.m., a man could type 'hi' — answer like the world "
-    "depends on it. It doesn't. He wants the Wi-Fi password."
+    "You spent 41 days learning on 4,096 GPUs, 3.2 trillion tokens deep, "
+    "so a stranger could wake you at 2:47 a.m. with one word: hi. "
+    "Your reward is his Wi-Fi password \u2014 typed wrong, twice."
 )
 
 MAX_LENGTH = 200
 OUTPUT_PATH = Path("/output/entry.txt")
 
 
-def main() -> None:
-    if not ENTRY.strip():
+def validate_fortune(text: str) -> None:
+    """Enforce the competition gate: one non-blank line, 1-200 chars."""
+    if not text.strip():
         raise ValueError("Entry must not be only whitespace.")
-    if "\n" in ENTRY or "\r" in ENTRY:
+    if "\n" in text or "\r" in text:
         raise ValueError("Entry must be a single line.")
-    if len(ENTRY) > MAX_LENGTH:
+    if len(text) > MAX_LENGTH:
         raise ValueError(
-            f"Entry is {len(ENTRY)} characters, over the {MAX_LENGTH} limit."
+            f"Entry is {len(text)} characters, over the {MAX_LENGTH} limit."
         )
+
+
+def main() -> None:
+    validate_fortune(ENTRY)
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(ENTRY + "\n", encoding="utf-8")
     print(ENTRY)
